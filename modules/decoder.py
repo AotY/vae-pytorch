@@ -35,9 +35,8 @@ class Decoder(nn.Module):
             z: [batch_size, z_size]
         return: [batch_size, 1, h, w]
         """
-
         cnn_output = self.cnn_transpose(z)
-        print(cnn_output.shape)
+        #  print('decoder: ', cnn_output.shape)
 
         return cnn_output
 

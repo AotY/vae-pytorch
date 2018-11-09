@@ -42,7 +42,6 @@ class VAE(nn.Module):
 
         return output, mu, logvar
 
-    
     def decode(self, z):
         output = self.decoder(z)
         return output

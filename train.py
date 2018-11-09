@@ -13,6 +13,8 @@ from torch.nn import functional as F
 from torchvision import datasets, transforms
 from torchvision.utils import save_image
 
+from vae import VAE
+
 parser = argparse.ArgumentParser(description='VAE MNIST Example')
 
 parser.add_argument('--batch_size', type=int, default=128, metavar='N',
@@ -32,7 +34,7 @@ device = torch.device(args.device)
 torch.manual_seed(args.seed)
 
 
-kwargs = {'num_workers': 1, 'pin_memory': True} if args.cuda else {}
+kwargs = {'num_workers': 1, 'pin_memory': True} if args.device == 'cuda' else {}
 train_loader = torch.utils.data.DataLoader(
     datasets.MNIST('./data', train=True, download=True,
                    transform=transforms.ToTensor()),
@@ -72,6 +74,7 @@ def train(epoch):
     train_loss = 0
     for batch_idx, (input, _) in enumerate(train_loader):
         input = input.to(device)
+        #  print('input shape: ', input.shape)
         optimizer.zero_grad()
         output, mu, logvar = model(input)
         loss = loss_function(output, input, mu, logvar)
@@ -100,7 +103,7 @@ def test(epoch):
             if i == 0:
                 n = min(input.size(0), 8)
                 comparison = torch.cat([input[:n],
-                                      recon_batch.view(args.batch_size, 1, 28, 28)[:n]])
+                                      input.view(args.batch_size, 1, 28, 28)[:n]])
                 save_image(comparison.cpu(),
                          'results/reconstruction_' + str(epoch) + '.png', nrow=n)
 

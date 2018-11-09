@@ -11,20 +11,19 @@ Flatten
 import torch
 import torch.nn as nn
 
-class UnFlatten(nn.Module):
+class Flatten(nn.Module):
     def __init__(self):
-        super(UnFlatten, self).__init__()
+        super(Flatten, self).__init__()
 
     def forward(self, input):
         """
         Args:
-            input: [batch_size, z_size]
+            input: [batch_size, c, h, w]
 
-        return: [batch_size, final_channels, 1, 1]
+        return: [batch_size, c * h * w]
 
         """
 
-        return input.view(input.size(0), -1, 1, 1)
-
+        return input.view(input.size(0), -1)
 
 
