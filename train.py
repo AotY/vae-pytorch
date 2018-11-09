@@ -49,7 +49,7 @@ input_channels = 1
 h_size = 64
 z_size = 32
 
-lr = 0.001
+lr = 0.0001
 
 model = VAE(
     input_channels,
@@ -63,7 +63,7 @@ def loss_function(output, input, mu, logvar):
     """
     decoder_output: [batch_size, ]
     """
-    BCE = F.binary_cross_entropy(output, input)
+    BCE = F.binary_cross_entropy(output, input, reduction='sum')
 
     KLD = -0.5 * torch.sum(1 + logvar - mu.pow(2) - logvar.exp())
 
@@ -101,7 +101,7 @@ def test(epoch):
             test_loss += loss_function(output, input, mu, logvar).item()
 
             if i == 0:
-                n = min(input.size(0), 8)
+                n = max(input.size(0), 8)
                 comparison = torch.cat([input[:n],
                                       input.view(args.batch_size, 1, 28, 28)[:n]])
                 save_image(comparison.cpu(),
